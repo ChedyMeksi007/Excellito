@@ -1,15 +1,13 @@
 package main
 
 import (
-    "fmt"
+    "os"
+	"fmt"
     "log"
 	"strconv"
-	"os"
 	"encoding/csv"
-    "github.com/xuri/excelize/v2"	
+    "github.com/xuri/excelize/v2"
 )
-const Let = "E"
-var cellname string 
 
 func main(){
 /***************************************************************************************/
@@ -39,24 +37,25 @@ if k <= 26 {
 }
 //read the names of the columns needed
 var slColNames []string
-fmt.Println("give me the column names you want to use one by one  :\t")
+fmt.Println("give me the column names you want to use one by one:")
 for i:= 0 ; i<k ;i++{
 	var str string
 	fmt.Scan(&str)
 	slColNames = append(slColNames,str)
 }	
-/***************************************************************************************/    
 
-    CellsNamesE:= GetCellNames(file,firstSheet,"E")
+/***************************************************************************************/    
+// This is done for  specific excel sheet, of course it needs to be abstracter
+    CellsNamesE:= GetCellNames(file,firstSheet,slColNames[0])
     CellValuesE:= GetCellValues(CellsNamesE,firstSheet,file)
-	CellsNamesA:= GetCellNames(file,firstSheet,"A")
+	CellsNamesA:= GetCellNames(file,firstSheet,slColNames[1])
     CellValuesA:= GetCellValues(CellsNamesA,firstSheet,file)
 	
 	
 /***********************************/
 defer file.Close()
-/***********************************/
-  
+/**********************************/
+  // This is done on a specific excel sheet, of course it needs to be abstracter
 
     var Data [][]string
 	var Data1 []string
@@ -70,11 +69,13 @@ defer file.Close()
 	Data = append(Data, Data1)
 	Data = append(Data, Data2)
 	Data = RotateSlice90(Data)
+
+	// create csv file 
 	csvFile, err:= os.Create("inv.csv")
 	if err != nil {
 		log.Fatal(err)
 	}
-  
+  // create new writer to be able to write on the csv file created
 	csvWr:= csv.NewWriter(csvFile)
 
 	for _, value := range Data {
@@ -82,10 +83,17 @@ defer file.Close()
 
 	}
 	csvWr.Flush()
+	// close the file
 	csvFile.Close()
 	/**********************************/
 }
-
+/*
+*@brief this function rotates a 2d slice 90° to the right so if yo have a [2][10] slice the output will be a [10][2] slice  
+*
+*@param Data is the inputed slice 
+*
+*@param NData is the slice to be returned by this function after the changes that need to be done 
+*/
 func GetCellNames(file *excelize.File,SheetName string,CellLetter string) (map [int]string){
 	rows, err := file.GetRows(SheetName)
 	if err != nil{
@@ -95,11 +103,18 @@ func GetCellNames(file *excelize.File,SheetName string,CellLetter string) (map [
 	for k, _ := range rows{
 		k++
 		kstr := strconv.Itoa(k)
-		cellname = CellLetter + kstr
+		cellname := CellLetter + kstr
 		MapCellsNames[k]= cellname
 	}
 	return MapCellsNames
 }
+/*
+*@brief this function rotates a 2d slice 90° to the right so if yo have a [2][10] slice the output will be a [10][2] slice  
+*
+*@param Data is the inputed slice 
+*
+*@param NData is the slice to be returned by this function after the changes that need to be done 
+*/
 func GetCellValues(MapCellsNames map [int]string, SheetName string, file *excelize.File ) (map [int]string){
 	MapCellValues :=make(map[int]string)
 	var err error
@@ -112,6 +127,13 @@ func GetCellValues(MapCellsNames map [int]string, SheetName string, file *exceli
        }
 	return MapCellValues
 }
+/*
+*@brief this function rotates a 2d slice 90° to the right so if yo have a [2][10] slice the output will be a [10][2] slice  
+*
+*@param Data is the inputed slice 
+*
+*@param NData is the slice to be returned by this function after the changes that need to be done 
+*/
 func RotateSlice90(Data [][]string)[][]string{
 	NData := make ([][]string,111)
 	for i:= 0 ; i< len(NData); i++{
