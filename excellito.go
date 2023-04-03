@@ -88,11 +88,8 @@ defer file.Close()
 	/**********************************/
 }
 /*
-*@brief this function rotates a 2d slice 90° to the right so if yo have a [2][10] slice the output will be a [10][2] slice  
+*@brief this function creats a map of the cellnames to be used  
 *
-*@param Data is the inputed slice 
-*
-*@param NData is the slice to be returned by this function after the changes that need to be done 
 */
 func GetCellNames(file *excelize.File,SheetName string,CellLetter string) (map [int]string){
 	rows, err := file.GetRows(SheetName)
@@ -109,11 +106,7 @@ func GetCellNames(file *excelize.File,SheetName string,CellLetter string) (map [
 	return MapCellsNames
 }
 /*
-*@brief this function rotates a 2d slice 90° to the right so if yo have a [2][10] slice the output will be a [10][2] slice  
-*
-*@param Data is the inputed slice 
-*
-*@param NData is the slice to be returned by this function after the changes that need to be done 
+*@brief this function creats a map of the cellvalues to be used 
 */
 func GetCellValues(MapCellsNames map [int]string, SheetName string, file *excelize.File ) (map [int]string){
 	MapCellValues :=make(map[int]string)
