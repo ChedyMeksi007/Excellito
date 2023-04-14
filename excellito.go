@@ -3,14 +3,14 @@ package main
 import (
 	"encoding/csv"
 	"fmt"
-	"github.com/xuri/excelize/v2"
 	"log"
 	"os"
 	"strconv"
+
+	"github.com/xuri/excelize/v2"
 )
 
 func main() {
-	/***************************************************************************************/
 	// read the file name that you want to read
 	fmt.Println("give me the file name you want to open :\t")
 	var filename string
@@ -44,7 +44,6 @@ func main() {
 		slColNames = append(slColNames, str)
 	}
 
-	/***************************************************************************************/
 	// This is done for  specific excel sheet, of course it needs to be abstracter
 	CellsNamesE := GetCellNames(file, firstSheet, slColNames[0])
 	CellValuesE := GetCellValues(CellsNamesE, firstSheet, file)
@@ -86,13 +85,9 @@ func main() {
 	csvWr.Flush()
 	// close the file
 	csvFile.Close()
-	/**********************************/
 }
 
-/*
-*@brief this function creats a map of the cellnames to be used
-*
- */
+// this function creats a map of the cellnames to be used
 func GetCellNames(file *excelize.File, SheetName string, CellLetter string) map[int]string {
 	rows, err := file.GetRows(SheetName)
 	if err != nil {
@@ -108,9 +103,9 @@ func GetCellNames(file *excelize.File, SheetName string, CellLetter string) map[
 	return MapCellsNames
 }
 
-/*
-*@brief this function creats a map of the cellvalues to be used
- */
+
+// this function creats a map of the cellvalues to be used
+
 func GetCellValues(MapCellsNames map[int]string, SheetName string, file *excelize.File) map[int]string {
 	MapCellValues := make(map[int]string)
 	var err error
@@ -126,13 +121,7 @@ func GetCellValues(MapCellsNames map[int]string, SheetName string, file *exceliz
 	return MapCellValues
 }
 
-/*
-*@brief this function rotates a 2d slice 90° to the right so if yo have a [2][10] slice the output will be a [10][2] slice
-*
-*@param Data is the inputed slice
-*
-*@param NData is the slice to be returned by this function after the changes that need to be done
- */
+// transpose a 2s slice
 func RotateSlice90(Data [][]string) [][]string {
 	NData := make([][]string, 111)
 	for i := 0; i < len(NData); i++ {
