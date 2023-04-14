@@ -59,28 +59,30 @@ func main() {
 	var Data [][]string
 	var Data1 []string
 	var Data2 []string
-	Data1 = append(Data1, "SerialNumber")
+	Data1 = append(Data1, "Serial Number")
 	Data2 = append(Data2, "Asset Tag")
 	for i := 1; i <= 110; i++ {
-		Data1 = append(Data1, CellValuesA[i+2])
-		Data2 = append(Data2, CellValuesE[i+2])
+		Data2 = append(Data2, CellValuesA[i+2])
+		Data1 = append(Data1, CellValuesE[i+2])
 	}
 	Data = append(Data, Data1)
 	Data = append(Data, Data2)
 	Data = RotateSlice90(Data)
 
 	// create csv file
-	csvFile, err := os.Create("inv.csv")
+	csvFile, err := os.Create("inv3.csv")
 	if err != nil {
 		log.Fatal(err)
 	}
 	// create new writer to be able to write on the csv file created
 	csvWr := csv.NewWriter(csvFile)
-
-	for _, value := range Data {
-		_ = csvWr.Write(value)
-
+   
+	for i := 0; i<len(Data); i++ {
+			if(Data[i][0] != "" && Data[i][1] != ""){
+			_ = csvWr.Write(Data[i])
+		}
 	}
+	
 	csvWr.Flush()
 	// close the file
 	csvFile.Close()
