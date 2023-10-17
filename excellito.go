@@ -53,7 +53,6 @@ func main() {
 	}
 	Data = append(Data, Data1)
 	Data = append(Data, Data2)
-	fmt.Println(Data)
 	Data = RotateSlice90(Data)
 
 	// create csv file
