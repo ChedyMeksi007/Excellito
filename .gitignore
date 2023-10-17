@@ -1,3 +1,5 @@
+#ignore bin file
+excellito
 # ignore ALL .csv files
 *.csv
 # ignore ALL .xlsx files

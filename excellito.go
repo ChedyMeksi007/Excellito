@@ -3,6 +3,7 @@ package main
 import (
 	"encoding/csv"
 	"fmt"
+	"flag"
 	"log"
 	"os"
 	"strconv"
@@ -11,34 +12,21 @@ import (
 )
 
 func main() {
-	// read the file name that you want to read
-	fmt.Println("give me the file name you want to open :\t")
-	var filename string
-	fmt.Scan(&filename)
+	fileName := flag.String("filename","","filename to open")
+	sheetNumber := flag.Int("sheetnumber",1,"sheet number to open")
+	flag.Parse()
 	//open the excel file
-	file, err := excelize.OpenFile(filename)
+	file, err := excelize.OpenFile(*fileName)
 	if err != nil {
 
 		log.Fatal(err)
 	}
 	//read the sheet number that we are going to use
-	fmt.Println("give me the sheet number you want to open (1-> ...) :\t")
-	var sheetNumber int
-	fmt.Scan(&sheetNumber)
-	firstSheet := file.WorkBook.Sheets.Sheet[sheetNumber-1].Name
-	//read the numbers of the columns needed
-	var k int
-	for {
-		fmt.Println("give me the number of columns  you want to use  :\t")
-		fmt.Scan(&k)
-		if k <= 26 {
-			break
-		}
-	}
+	firstSheet := file.WorkBook.Sheets.Sheet[*sheetNumber-1].Name
 	//read the names of the columns needed
 	var slColNames []string
 	fmt.Println("give me the column names you want to use one by one:")
-	for i := 0; i < k; i++ {
+	for i := 0; i < 2; i++ {
 		var str string
 		fmt.Scan(&str)
 		slColNames = append(slColNames, str)
@@ -49,10 +37,9 @@ func main() {
 	CellValuesE := GetCellValues(CellsNamesE, firstSheet, file)
 	CellsNamesA := GetCellNames(file, firstSheet, slColNames[1])
 	CellValuesA := GetCellValues(CellsNamesA, firstSheet, file)
-
 	/***********************************/
 	defer file.Close()
-	/**********************************/
+        /*********************************/
 	// This is done on a specific excel sheet, of course it needs to be abstracter
 
 	var Data [][]string
@@ -60,12 +47,13 @@ func main() {
 	var Data2 []string
 	Data1 = append(Data1, "Serial Number")
 	Data2 = append(Data2, "Asset Tag")
-	for i := 1; i <= 110; i++ {
-		Data2 = append(Data2, CellValuesA[i+2])
-		Data1 = append(Data1, CellValuesE[i+2])
+	for  i:=0;i<len(CellValuesA);i++{
+		Data2 = append(Data2, CellValuesA[i+1])
+		Data1 = append(Data1, CellValuesE[i+1])
 	}
 	Data = append(Data, Data1)
 	Data = append(Data, Data2)
+	fmt.Println(Data)
 	Data = RotateSlice90(Data)
 
 	// create csv file
@@ -123,7 +111,8 @@ func GetCellValues(MapCellsNames map[int]string, SheetName string, file *exceliz
 
 // transpose a 2s slice
 func RotateSlice90(Data [][]string) [][]string {
-	NData := make([][]string, 111)
+	NData := make([][]string, len(Data[0]))
+	fmt.Println(len(Data))
 	for i := 0; i < len(NData); i++ {
 		NData[i] = make([]string, 2)
 	}
