@@ -7,6 +7,7 @@ import (
 	"log"
 	"os"
 	"strconv"
+	"strings"
 
 	"github.com/xuri/excelize/v2"
 )
@@ -62,9 +63,13 @@ func main() {
 	}
 	// create new writer to be able to write on the csv file created
 	csvWr := csv.NewWriter(csvFile)
-   
-	for i := 0; i<len(Data); i++ {
-			if(Data[i][0] != "" && Data[i][1] != ""){
+   	
+	_ = csvWr.Write(Data[0])
+	
+
+	for i := 1; i<len(Data); i++ {
+
+			if(Data[i][0] != "" && Data[i][1] != "" && strings.ToUpper(Data[i][0])!= "SERIAL NUMBER" && Data[i][0] != strings.ToUpper("ASSET TAG")  && strings.ToUpper(Data[i][1])!= "SERIAL NUMBER" && Data[i][1] != strings.ToUpper("ASSET TAG")  ){
 			_ = csvWr.Write(Data[i])
 		}
 	}
